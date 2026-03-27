@@ -5,181 +5,272 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pinned Post Generator — Visibility by Design</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;700&family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Montserrat:wght@400;600;700;900&family=Playfair+Display:wght@400;700;900&family=Raleway:wght@300;400;700;900&family=Inter:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Cormorant+Garamond:wght@400;600;700&family=Playfair+Display:wght@400;700;900&family=Raleway:wght@300;400;700;900&family=DM+Sans:wght@300;400;700&family=Inter:wght@300;400;700&family=Josefin+Sans:wght@300;400;700&display=swap');
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
 :root{
-  --ui-p:#7F77DD;--ui-pk:#D4537E;--ui-t:#1D9E75;
+  --p400:#7F77DD;--p600:#534AB7;--p800:#3C3489;
+  --p200:#AFA9EC;--p50:#EEEDFE;
+  --pk400:#D4537E;--pk200:#ED93B1;--pk50:#FBEAF0;
+  --teal:#1D9E75;
   --bg:#faf9ff;--surf:#ffffff;--surf2:#f4f2fd;
   --bdr:rgba(127,119,221,0.18);
   --tx:#1a1730;--txs:#5c5480;--txm:#9490b8;
-  /* Brand vars — overridden by JS */
-  --b1:#7F77DD;--b2:#D4537E;--b1-light:rgba(127,119,221,0.12);--b2-light:rgba(212,83,126,0.10);
-  --slide-bg-start:#e8e6ff;--slide-bg-mid:#d4d0f5;--slide-bg-end:#ede8f8;
-  --slide-tx:#2a2050;--slide-tx2:#4a4070;
-  --heading-font:'Montserrat',sans-serif;--body-font:'Lato',sans-serif;
 }
-body{background:var(--bg);color:var(--tx);font-family:'Lato',sans-serif;min-height:100vh;padding:0 0 80px;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 15% 10%,rgba(175,169,236,0.18) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 85% 90%,rgba(212,83,126,0.08) 0%,transparent 60%);pointer-events:none;z-index:0;}
-.wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:0 20px 60px;}
 
-/* HEADER */
-.header{text-align:center;padding:36px 16px 24px;}
-.badge{display:inline-block;background:rgba(127,119,221,0.1);border:1px solid rgba(127,119,221,0.3);color:var(--ui-p);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;padding:5px 16px;border-radius:100px;margin-bottom:14px;}
-h1{font-family:'Montserrat',sans-serif;font-size:clamp(22px,4.5vw,30px);font-weight:900;color:var(--tx);line-height:1.12;margin-bottom:8px;}
-h1 span{color:var(--ui-p);}
-.subtitle{font-size:13.5px;color:var(--txs);line-height:1.65;max-width:500px;margin:0 auto;font-weight:300;}
+body{
+  background:var(--bg);color:var(--tx);
+  font-family:'Lato',sans-serif;
+  min-height:100vh;padding:0 0 100px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 12% 8%, rgba(175,169,236,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 88% 92%, rgba(212,83,126,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(127,119,221,0.04) 0%, transparent 70%);
+  pointer-events:none;z-index:0;
+}
 
-/* STEP PROGRESS */
-.step-progress{display:flex;align-items:center;justify-content:center;gap:0;margin:24px 0 32px;}
-.step-pip{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:default;}
-.step-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--bdr);background:var(--surf);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--txm);transition:all 0.3s;}
-.step-circle.active{background:var(--ui-p);border-color:var(--ui-p);color:#fff;box-shadow:0 0 0 4px rgba(127,119,221,0.15);}
-.step-circle.done{background:var(--ui-t);border-color:var(--ui-t);color:#fff;}
-.step-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txm);white-space:nowrap;}
-.step-label.active{color:var(--ui-p);}
-.step-line{width:48px;height:2px;background:var(--bdr);margin:0 4px;margin-bottom:22px;transition:background 0.3s;}
-.step-line.done{background:var(--ui-t);}
+.wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 20px 80px;}
 
-/* SECTION LABEL */
-.section-label{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--ui-p);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+/* ── HEADER ── */
+.header{text-align:center;padding:44px 16px 28px;}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(127,119,221,0.1);border:1px solid rgba(127,119,221,0.28);
+  color:var(--p400);font-family:'Montserrat',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  padding:5px 16px;border-radius:100px;margin-bottom:16px;
+}
+h1{
+  font-family:'Montserrat',sans-serif;font-size:clamp(24px,5vw,34px);
+  font-weight:900;color:var(--tx);line-height:1.1;margin-bottom:10px;
+}
+h1 em{font-style:normal;color:var(--p400);}
+.subtitle{font-size:14px;color:var(--txs);line-height:1.7;max-width:480px;margin:0 auto;font-weight:300;}
+
+/* ── STEP PROGRESS ── */
+.steps{display:flex;align-items:center;justify-content:center;gap:0;margin:28px 0 36px;}
+.step-pip{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.step-circle{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid var(--bdr);background:var(--surf);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;
+  color:var(--txm);transition:all 0.3s;
+}
+.step-circle.active{background:var(--p400);border-color:var(--p400);color:#fff;box-shadow:0 0 0 5px rgba(127,119,221,0.14);}
+.step-circle.done{background:var(--teal);border-color:var(--teal);color:#fff;}
+.step-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--txm);white-space:nowrap;}
+.step-label.active{color:var(--p400);}
+.step-line{width:52px;height:2px;background:var(--bdr);margin:0 4px;margin-bottom:20px;transition:background 0.3s;}
+.step-line.done{background:var(--teal);}
+
+/* ── SECTION LABEL ── */
+.section-label{
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;color:var(--p400);
+  margin-bottom:12px;display:flex;align-items:center;gap:10px;
+}
 .section-label::after{content:'';flex:1;height:1px;background:var(--bdr);}
 
-/* CARDS */
-.card{background:var(--surf);border:1px solid var(--bdr);border-radius:16px;padding:20px 22px;margin-bottom:12px;box-shadow:0 2px 14px rgba(127,119,221,0.04);}
-.intro-card{background:linear-gradient(135deg,rgba(127,119,221,0.06) 0%,rgba(212,83,126,0.04) 100%);border:1px solid rgba(127,119,221,0.15);border-radius:16px;padding:18px 22px;margin-bottom:22px;}
-.intro-card p{font-size:13px;color:var(--txs);line-height:1.7;}
-.intro-card strong{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;display:block;margin-bottom:6px;color:var(--ui-p);}
+/* ── CARDS ── */
+.card{
+  background:var(--surf);border:1px solid var(--bdr);
+  border-radius:16px;padding:22px 24px;margin-bottom:14px;
+  box-shadow:0 2px 16px rgba(127,119,221,0.05);
+}
+.intro-card{
+  background:linear-gradient(135deg,rgba(127,119,221,0.06) 0%,rgba(212,83,126,0.04) 100%);
+  border:1px solid rgba(127,119,221,0.15);border-radius:16px;
+  padding:18px 22px;margin-bottom:22px;
+}
+.intro-card strong{
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;
+  display:block;margin-bottom:6px;color:var(--p400);letter-spacing:0.5px;
+}
+.intro-card p{font-size:13.5px;color:var(--txs);line-height:1.7;}
 
-/* ── BRAND SETUP ── */
-.brand-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-@media(max-width:520px){.brand-grid{grid-template-columns:1fr;}}
+/* ── BRAND INPUTS ── */
+.brand-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+@media(max-width:500px){.brand-grid{grid-template-columns:1fr;}}
 
-.brand-field label{display:block;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--txm);margin-bottom:8px;}
-.color-input-row{display:flex;align-items:center;gap:10px;}
-.color-swatch{width:40px;height:40px;border-radius:10px;border:2px solid var(--bdr);cursor:pointer;overflow:hidden;position:relative;flex-shrink:0;}
-.color-swatch input[type=color]{position:absolute;inset:-4px;width:calc(100%+8px);height:calc(100%+8px);border:none;cursor:pointer;opacity:0;}
-.color-hex{flex:1;background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;padding:10px 13px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;color:var(--tx);width:100%;}
-.color-hex:focus{outline:none;border-color:var(--ui-p);}
+.brand-field label{
+  display:block;font-family:'Montserrat',sans-serif;font-size:10px;
+  font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--txm);margin-bottom:8px;
+}
+.color-row{display:flex;align-items:center;gap:10px;}
+.swatch{
+  width:42px;height:42px;border-radius:10px;border:2px solid var(--bdr);
+  cursor:pointer;overflow:hidden;position:relative;flex-shrink:0;
+}
+.swatch input[type=color]{
+  position:absolute;inset:-6px;width:calc(100%+12px);height:calc(100%+12px);
+  border:none;cursor:pointer;opacity:0;
+}
+.hex-input{
+  flex:1;background:var(--surf2);border:1px solid var(--bdr);
+  border-radius:10px;padding:11px 13px;
+  font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;
+  color:var(--tx);width:100%;transition:border-color 0.18s;
+}
+.hex-input:focus{outline:none;border-color:var(--p400);}
 
-.font-select-wrap{position:relative;}
-.font-select{width:100%;appearance:none;background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;padding:11px 36px 11px 13px;font-size:13px;color:var(--tx);cursor:pointer;}
-.font-select:focus{outline:none;border-color:var(--ui-p);}
-.font-select-wrap::after{content:'▾';position:absolute;right:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--txm);font-size:14px;}
+.font-wrap{position:relative;}
+.font-select{
+  width:100%;appearance:none;background:var(--surf2);border:1px solid var(--bdr);
+  border-radius:10px;padding:12px 36px 12px 13px;
+  font-size:13px;color:var(--tx);cursor:pointer;transition:border-color 0.18s;
+}
+.font-select:focus{outline:none;border-color:var(--p400);}
+.font-wrap::after{content:'▾';position:absolute;right:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--txm);}
 
-.mode-toggle{display:flex;gap:8px;}
-.mode-btn{flex:1;padding:10px;border-radius:10px;border:2px solid var(--bdr);background:var(--surf2);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;color:var(--txm);text-align:center;}
-.mode-btn.active{border-color:var(--ui-p);background:rgba(127,119,221,0.08);color:var(--ui-p);}
+.mode-row{display:flex;gap:8px;}
+.mode-btn{
+  flex:1;padding:11px;border-radius:10px;border:2px solid var(--bdr);
+  background:var(--surf2);font-family:'Montserrat',sans-serif;
+  font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;
+  color:var(--txm);text-align:center;
+}
+.mode-btn.on{border-color:var(--p400);background:rgba(127,119,221,0.08);color:var(--p400);}
 
-/* BRAND PREVIEW */
-.brand-preview{margin-top:16px;padding:16px;border-radius:12px;border:1px solid var(--bdr);background:var(--surf2);}
-.brand-preview-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--txm);margin-bottom:10px;}
-.preview-slide{width:100%;max-width:200px;margin:0 auto;aspect-ratio:4/5;border-radius:12px;overflow:hidden;position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:16px;text-align:center;transition:all 0.3s;}
-.preview-slide-badge{font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:100px;margin-bottom:10px;opacity:0.8;}
-.preview-slide-headline{font-size:13px;font-weight:800;line-height:1.3;margin-bottom:6px;}
-.preview-slide-body{font-size:10px;line-height:1.5;opacity:0.75;}
+/* ── LIVE PREVIEW ── */
+.preview-wrap{margin-top:18px;}
+.preview-label{font-family:'Montserrat',sans-serif;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--txm);margin-bottom:10px;}
+.preview-slide{
+  width:100%;max-width:180px;aspect-ratio:4/5;
+  border-radius:14px;overflow:hidden;position:relative;
+  display:flex;flex-direction:column;justify-content:center;
+  align-items:center;padding:18px 14px;text-align:center;
+  transition:all 0.3s;margin:0 auto;
+}
+.prev-hl{font-size:13px;font-weight:800;line-height:1.3;margin-bottom:6px;}
+.prev-body{font-size:10px;line-height:1.55;opacity:0.72;}
 
-/* Q CARDS */
-.q-card{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;padding:16px 18px;margin-bottom:10px;transition:border-color 0.2s;}
-.q-card:focus-within{border-color:rgba(127,119,221,0.4);}
-.q-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
-.q-num{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:rgba(127,119,221,0.08);border:1px solid rgba(127,119,221,0.2);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;color:var(--ui-p);margin-top:2px;transition:all 0.2s;}
-.q-num.answered{background:var(--ui-p);border-color:var(--ui-p);color:#fff;}
-.q-text{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--tx);line-height:1.35;margin-bottom:3px;}
-.q-hint{font-size:11.5px;color:var(--txm);font-style:italic;line-height:1.5;}
-.q-card textarea,.q-card input[type=text]{width:100%;background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;padding:10px 13px;color:var(--tx);font-family:'Lato',sans-serif;font-size:13px;line-height:1.6;resize:vertical;transition:border-color 0.18s;}
-.q-card textarea{min-height:76px;}
-.q-card input[type=text]{height:42px;}
-.q-card textarea:focus,.q-card input[type=text]:focus{outline:none;border-color:var(--ui-p);background:var(--surf);}
-.q-card textarea::placeholder,.q-card input[type=text]::placeholder{color:var(--txm);}
+/* ── TEXTAREA ── */
+textarea{
+  width:100%;background:var(--surf2);border:1px solid var(--bdr);
+  border-radius:12px;padding:14px 16px;
+  font-family:'Lato',sans-serif;font-size:13.5px;line-height:1.75;
+  color:var(--tx);resize:vertical;transition:border-color 0.18s,background 0.18s;
+}
+textarea:focus{outline:none;border-color:var(--p400);background:var(--surf);}
+textarea::placeholder{color:var(--txm);}
 
-/* BUTTONS */
-.btn-primary{width:100%;padding:16px;color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;border:none;border-radius:14px;cursor:pointer;transition:all 0.2s;margin-top:10px;letter-spacing:0.3px;background:var(--ui-pk);box-shadow:0 4px 22px rgba(212,83,126,0.28);}
-.btn-primary:hover{filter:brightness(0.9);transform:translateY(-1px);}
-.btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
-.btn-secondary{padding:9px 20px;border-radius:100px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.18s;border:1px solid var(--bdr);background:var(--surf2);color:var(--txs);}
-.btn-secondary:hover{border-color:var(--ui-p);color:var(--ui-p);}
+/* ── BUTTONS ── */
+.btn-primary{
+  width:100%;padding:17px;color:#fff;
+  font-family:'Montserrat',sans-serif;font-weight:900;font-size:15px;
+  border:none;border-radius:14px;cursor:pointer;transition:all 0.2s;
+  margin-top:10px;letter-spacing:0.3px;
+  background:linear-gradient(135deg,var(--pk400) 0%,#b8416a 100%);
+  box-shadow:0 4px 24px rgba(212,83,126,0.3);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(212,83,126,0.38);}
+.btn-primary:disabled{opacity:0.38;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-secondary{
+  padding:10px 22px;border-radius:100px;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;transition:all 0.18s;
+  border:1px solid var(--bdr);background:var(--surf2);color:var(--txs);
+}
+.btn-secondary:hover{border-color:var(--p400);color:var(--p400);}
 
-/* LOADING */
-.loading-wrap{text-align:center;padding:56px 20px;}
-.loading-dots{display:flex;gap:8px;justify-content:center;margin-bottom:16px;}
-.dot{width:10px;height:10px;border-radius:50%;background:rgba(212,83,126,0.4);animation:dp 1.2s infinite;}
-.dot:nth-child(2){animation-delay:0.2s;}.dot:nth-child(3){animation-delay:0.4s;}
-@keyframes dp{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1);}}
-.loading-pin{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:var(--ui-p);margin-bottom:8px;}
-.loading-wrap p{font-size:13px;color:var(--txm);font-style:italic;}
+/* ── STEP 3 DELIVERY ── */
+.delivery-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;}
+.d-step{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px 18px;background:var(--surf);
+  border:1px solid var(--bdr);border-radius:14px;
+}
+.d-num{
+  flex-shrink:0;width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:900;color:#fff;
+}
+.d-num.n1{background:var(--p400);}
+.d-num.n2{background:var(--pk400);}
+.d-num.n3{background:var(--teal);}
+.d-text{font-size:13.5px;color:var(--tx);line-height:1.6;}
+.d-text strong{font-family:'Montserrat',sans-serif;font-weight:700;}
+.d-text code{
+  background:var(--p50);color:var(--p600);
+  padding:1px 6px;border-radius:4px;font-size:12px;
+}
 
-/* PIN TABS */
-.pin-tabs{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
-.pin-tab{padding:9px 20px;border-radius:100px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:2px solid var(--bdr);color:var(--txs);background:var(--surf);transition:all 0.2s;}
-.pin-tab.active{color:#fff;border-color:transparent;}
-.pin-tab.t1.active{background:var(--ui-p);}
-.pin-tab.t2.active{background:var(--ui-pk);}
-.pin-tab.t3.active{background:var(--ui-t);}
+.action-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:24px;}
+.open-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 24px;border-radius:100px;
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;border:2px solid var(--p400);
+  background:rgba(127,119,221,0.07);color:var(--p400);
+  transition:all 0.18s;text-decoration:none;
+}
+.open-btn:hover{background:rgba(127,119,221,0.16);}
 
-.pin-panel{display:none;}
-.pin-panel.active{display:block;}
+/* ── PROMPT BOX ── */
+.prompt-card{
+  background:var(--surf);border:1px solid var(--bdr);
+  border-radius:14px;overflow:hidden;margin-bottom:16px;
+}
+.prompt-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 18px;background:var(--surf2);border-bottom:1px solid var(--bdr);
+}
+.prompt-top-label{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:var(--tx);}
+.copy-prompt-btn{
+  padding:7px 16px;border-radius:100px;
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  cursor:pointer;border:1px solid rgba(127,119,221,0.3);
+  background:rgba(127,119,221,0.06);color:var(--p400);transition:all 0.18s;
+}
+.copy-prompt-btn:hover{background:rgba(127,119,221,0.15);}
+.copy-prompt-btn.copied{background:var(--teal);color:#fff;border-color:var(--teal);}
 
-/* RESULTS BAR */
-.results-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
-.results-bar-left{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:700;color:var(--tx);}
-.results-bar-right{display:flex;gap:8px;}
+.prompt-preview{
+  padding:18px;max-height:240px;overflow-y:auto;
+  font-family:'Lato',sans-serif;font-size:12px;line-height:1.65;
+  color:var(--txs);white-space:pre-wrap;word-break:break-word;
+}
 
-/* SCREENSHOT TIP */
-.screenshot-tip{border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:12.5px;line-height:1.6;border:1px solid;}
+/* ── WHAT CLAUDE WILL BUILD ── */
+.what-box{
+  background:linear-gradient(135deg,var(--p50) 0%,var(--pk50) 100%);
+  border:1px solid var(--p200);border-radius:14px;
+  padding:18px 22px;margin-bottom:22px;
+}
+.what-box-label{
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;color:var(--p600);
+  margin-bottom:12px;
+}
+.what-items{display:flex;flex-direction:column;gap:8px;}
+.what-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--txs);line-height:1.5;}
+.what-icon{flex-shrink:0;font-size:14px;}
 
-/* SLIDES GRID */
-.slides-label{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--txm);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.slides-label::after{content:'';flex:1;height:1px;background:var(--bdr);}
-.slides-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:28px;}
-
-/* SLIDE VISUAL */
-.slide-wrap{display:flex;flex-direction:column;gap:6px;}
-.slide-num-label{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:var(--txm);letter-spacing:1px;text-transform:uppercase;}
-.slide-visual{width:100%;aspect-ratio:4/5;border-radius:14px;overflow:hidden;position:relative;box-shadow:0 4px 20px rgba(0,0,0,0.08);transition:transform 0.2s,box-shadow 0.2s;}
-.slide-visual:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.12);}
-
-.slide-blob1{position:absolute;width:65%;height:65%;border-radius:50%;top:-20%;right:-15%;opacity:0.4;}
-.slide-blob2{position:absolute;width:45%;height:45%;border-radius:50%;bottom:-12%;left:-12%;opacity:0.3;}
-
-.slide-inner{position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:16px 14px;text-align:center;}
-.slide-badge{font-size:7px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;border-radius:100px;margin-bottom:10px;opacity:0.8;}
-.slide-num-circle{position:absolute;top:11px;left:12px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;}
-.slide-headline{font-size:clamp(11px,1.6vw,14px);font-weight:800;line-height:1.3;margin-bottom:7px;white-space:pre-line;}
-.slide-body-text{font-size:clamp(9px,1.2vw,11px);font-weight:400;line-height:1.5;white-space:pre-line;opacity:0.8;}
-.slide-swipe{position:absolute;bottom:11px;right:12px;font-size:8px;font-weight:700;letter-spacing:0.5px;opacity:0.5;}
-
-/* CAPTION */
-.caption-card{background:var(--surf);border:1px solid var(--bdr);border-radius:14px;overflow:hidden;margin-bottom:24px;}
-.caption-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--surf2);border-bottom:1px solid var(--bdr);}
-.caption-top-left{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;color:var(--tx);}
-.caption-body{padding:16px;}
-.caption-text{font-size:13px;color:var(--tx);line-height:1.8;white-space:pre-wrap;}
-.hashtag-row{margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr);font-size:13px;line-height:1.7;color:var(--ui-p);}
-.copy-btn{padding:6px 14px;border-radius:100px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;cursor:pointer;border:1px solid rgba(212,83,126,0.3);background:rgba(212,83,126,0.06);color:var(--ui-pk);transition:all 0.18s;}
-.copy-btn:hover{background:rgba(212,83,126,0.15);}
-.copy-btn.copied{background:var(--ui-t);color:#fff;border-color:var(--ui-t);}
-
+/* ── HELPERS ── */
 .hidden{display:none!important;}
-
-/* PREP QUESTIONS */
-.prep-questions{display:flex;flex-direction:column;gap:10px;}
-.prep-q{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--surf2);border-radius:10px;border:1px solid var(--bdr);}
-.prep-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--ui-p);color:#fff;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;}
-.prep-q div{font-size:13px;color:var(--txs);line-height:1.6;}
-.prep-q strong{font-family:'Montserrat',sans-serif;font-size:12.5px;font-weight:700;color:var(--tx);display:block;margin-bottom:2px;}
+.word-count{text-align:right;font-size:11px;color:var(--txm);margin-top:6px;font-family:'Montserrat',sans-serif;}
+.char-count{text-align:right;font-size:10px;color:var(--txm);margin-top:4px;font-family:'Montserrat',sans-serif;}
+.divider-row{display:flex;gap:10px;margin-top:6px;}
 </style>
 </head>
 <body>
 <div class="wrap">
 
+  <!-- HEADER -->
   <div class="header">
     <div class="badge">✦ Instagram · Pinned Posts</div>
-    <h1>Pinned Post <span>Generator</span></h1>
-    <p class="subtitle">Set your brand, record one Loom answering the prep questions, paste the transcript — get 3 fully scripted pinned posts in your voice.</p>
+    <h1>Pinned Post <em>Generator</em></h1>
+    <p class="subtitle">Set your brand. Paste your transcript. Copy one prompt into Claude — your 3 fully designed pinned post carousels appear in that chat, in your colors.</p>
   </div>
 
   <!-- PROGRESS -->
-  <div class="step-progress" id="stepProgress">
+  <div class="steps" id="stepsBar">
     <div class="step-pip">
       <div class="step-circle active" id="sc1">1</div>
       <div class="step-label active" id="sl1">Brand</div>
@@ -187,20 +278,20 @@ h1 span{color:var(--ui-p);}
     <div class="step-line" id="line1"></div>
     <div class="step-pip">
       <div class="step-circle" id="sc2">2</div>
-      <div class="step-label" id="sl2">Loom</div>
+      <div class="step-label" id="sl2">Transcript</div>
     </div>
     <div class="step-line" id="line2"></div>
     <div class="step-pip">
       <div class="step-circle" id="sc3">3</div>
-      <div class="step-label" id="sl3">Slides</div>
+      <div class="step-label" id="sl3">Your Prompt</div>
     </div>
   </div>
 
-  <!-- ── STEP 1: BRAND SETUP ── -->
+  <!-- ══════════════════════════════════ STEP 1: BRAND ══════════════════════════════════ -->
   <div id="step1">
     <div class="intro-card">
       <strong>Step 1 of 3 — Your Brand</strong>
-      <p>Set your colors and font once. Every slide will render in your branding — screenshot-ready for Canva.</p>
+      <p>Set your colors and font. These get baked into the prompt so Claude renders your slides in your exact branding — no extra steps.</p>
     </div>
 
     <div class="section-label">Colors</div>
@@ -208,29 +299,29 @@ h1 span{color:var(--ui-p);}
       <div class="brand-grid">
         <div class="brand-field">
           <label>Primary Color</label>
-          <div class="color-input-row">
-            <div class="color-swatch" id="swatch1" style="background:#7F77DD;">
-              <input type="color" id="color1" value="#7F77DD" oninput="syncColor(1)">
+          <div class="color-row">
+            <div class="swatch" id="sw1" style="background:#7F77DD;">
+              <input type="color" id="col1" value="#7F77DD" oninput="syncColor(1)">
             </div>
-            <input type="text" class="color-hex" id="hex1" value="#7F77DD" maxlength="7" oninput="syncHex(1)" placeholder="#000000">
+            <input type="text" class="hex-input" id="hex1" value="#7F77DD" maxlength="7" oninput="syncHex(1)" placeholder="#000000">
           </div>
         </div>
         <div class="brand-field">
-          <label>Secondary / Accent Color</label>
-          <div class="color-input-row">
-            <div class="color-swatch" id="swatch2" style="background:#D4537E;">
-              <input type="color" id="color2" value="#D4537E" oninput="syncColor(2)">
+          <label>Accent Color</label>
+          <div class="color-row">
+            <div class="swatch" id="sw2" style="background:#D4537E;">
+              <input type="color" id="col2" value="#D4537E" oninput="syncColor(2)">
             </div>
-            <input type="text" class="color-hex" id="hex2" value="#D4537E" maxlength="7" oninput="syncHex(2)" placeholder="#000000">
+            <input type="text" class="hex-input" id="hex2" value="#D4537E" maxlength="7" oninput="syncHex(2)" placeholder="#000000">
           </div>
         </div>
       </div>
 
-      <div class="brand-field" style="margin-bottom:16px;">
-        <label>Slide Style</label>
-        <div class="mode-toggle">
-          <button class="mode-btn active" id="modeLight" onclick="setMode('light')">☀️ Light (soft gradient)</button>
-          <button class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark (moody)</button>
+      <div class="brand-field" style="margin-bottom:0;">
+        <label>Slide Background Style</label>
+        <div class="mode-row">
+          <button class="mode-btn on" id="modeLight" onclick="setMode('light')">☀️ Light — soft gradient</button>
+          <button class="mode-btn" id="modeDark" onclick="setMode('dark')">🌙 Dark — moody & deep</button>
         </div>
       </div>
     </div>
@@ -240,28 +331,28 @@ h1 span{color:var(--ui-p);}
       <div class="brand-grid">
         <div class="brand-field">
           <label>Heading Font</label>
-          <div class="font-select-wrap">
-            <select class="font-select" id="headingFont" onchange="updatePreview()">
-              <option value="Montserrat">Montserrat (bold + modern)</option>
-              <option value="Playfair Display">Playfair Display (elegant serif)</option>
-              <option value="Cormorant Garamond">Cormorant Garamond (luxury)</option>
-              <option value="Raleway">Raleway (clean + airy)</option>
-              <option value="Josefin Sans">Josefin Sans (geometric)</option>
-              <option value="DM Sans">DM Sans (friendly modern)</option>
-              <option value="Inter">Inter (minimal clean)</option>
+          <div class="font-wrap">
+            <select class="font-select" id="headFont" onchange="updatePreview()">
+              <option value="Montserrat">Montserrat — bold + modern</option>
+              <option value="Playfair Display">Playfair Display — elegant serif</option>
+              <option value="Cormorant Garamond">Cormorant Garamond — luxury</option>
+              <option value="Raleway">Raleway — clean + airy</option>
+              <option value="Josefin Sans">Josefin Sans — geometric</option>
+              <option value="DM Sans">DM Sans — friendly modern</option>
+              <option value="Inter">Inter — minimal clean</option>
             </select>
           </div>
         </div>
         <div class="brand-field">
           <label>Body Font</label>
-          <div class="font-select-wrap">
+          <div class="font-wrap">
             <select class="font-select" id="bodyFont" onchange="updatePreview()">
-              <option value="Lato">Lato (warm + readable)</option>
-              <option value="DM Sans">DM Sans (friendly modern)</option>
-              <option value="Inter">Inter (minimal clean)</option>
-              <option value="Raleway">Raleway (clean + airy)</option>
-              <option value="Montserrat">Montserrat (bold + modern)</option>
-              <option value="Cormorant Garamond">Cormorant Garamond (luxury)</option>
+              <option value="Lato">Lato — warm + readable</option>
+              <option value="DM Sans">DM Sans — friendly modern</option>
+              <option value="Inter">Inter — minimal clean</option>
+              <option value="Raleway">Raleway — clean + airy</option>
+              <option value="Montserrat">Montserrat — bold</option>
+              <option value="Cormorant Garamond">Cormorant Garamond — luxury</option>
             </select>
           </div>
         </div>
@@ -269,469 +360,315 @@ h1 span{color:var(--ui-p);}
     </div>
 
     <div class="section-label">Preview</div>
-    <div class="card brand-preview" id="brandPreview">
-      <div class="brand-preview-label">Live Slide Preview</div>
-      <div class="preview-slide" id="previewSlide">
-        <div class="preview-slide-badge" id="prevBadge" style="display:none;"></div>
-        <div class="preview-slide-headline" id="prevHeadline">I help spiritual coaches build businesses that actually convert ✨</div>
-        <div class="preview-slide-body" id="prevBody">Without bro marketing or burning out</div>
+    <div class="card" style="padding:18px;">
+      <div class="preview-label">Live Slide Preview</div>
+      <div class="preview-slide" id="prevSlide">
+        <div class="prev-hl" id="prevHl">I help spiritual entrepreneurs build businesses that actually convert ✨</div>
+        <div class="prev-body" id="prevBody">Without bro marketing or burning out</div>
       </div>
     </div>
 
-    <button class="btn-primary" onclick="goStep(2)" style="margin-top:20px;">Continue → Add Your Profile</button>
+    <button class="btn-primary" onclick="goStep(2)">Continue → Paste Your Transcript</button>
   </div>
 
-  <!-- ── STEP 2: LOOM PREP + TRANSCRIPT ── -->
+  <!-- ══════════════════════════════════ STEP 2: TRANSCRIPT ══════════════════════════════════ -->
   <div id="step2" class="hidden">
     <div class="intro-card">
-      <strong>Step 2 of 3 — Record Your Loom</strong>
-      <p>Read the questions below, then record one Loom answering all of them. Talk naturally — the more specific your stories and language, the better your posts will sound like <em>you</em>. Then paste the transcript below and generate.</p>
+      <strong>Step 2 of 3 — Your Transcript</strong>
+      <p>Record a Loom answering all 10 questions below, then paste the full transcript here. The longer the better — Claude will extract the best pieces for each slide. Don't clean it up.</p>
     </div>
 
-    <div class="section-label">Your Loom Prep Questions</div>
+    <div class="section-label">Answer These in Your Loom</div>
+    <div class="card" style="margin-bottom:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
 
-    <div class="card" style="margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:rgba(127,119,221,0.1);border:1px solid rgba(127,119,221,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">📌</div>
-        <div>
-          <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;color:var(--tx);">Pin 1 — Connect Post</div>
-          <div style="font-size:11.5px;color:var(--txm);font-style:italic;">Your identity, origin story + who you serve</div>
+        <div style="padding:0 16px 0 0;border-right:1px solid var(--bdr);">
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--p400);margin-bottom:12px;">📌 Pin 1 — Connect (Your Story)</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">1.</span> What's your niche, modality, and approach? Who do you serve?</div>
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">2.</span> Your Human Design type + authority — how does it show up in your business?</div>
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">3.</span> Your origin story — the before, the turning point, the after.</div>
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">4.</span> Describe your ideal client — what keeps them stuck? What have they tried?</div>
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">5.</span> What content do you create and why should someone follow you?</div>
+          </div>
         </div>
-      </div>
-      <div class="prep-questions">
-        <div class="prep-q"><span class="prep-num">1</span><div><strong>What's your niche and modality?</strong> What do you actually do and who do you do it for? Be specific — name your approach, your framework, your lens.</div></div>
-        <div class="prep-q"><span class="prep-num">2</span><div><strong>What's your Human Design type and authority?</strong> And how does it show up in your business? (Optional but powerful.)</div></div>
-        <div class="prep-q"><span class="prep-num">3</span><div><strong>Tell your origin story.</strong> What were you struggling with before? What was the turning point that changed everything? What does your life and business look like now because of it?</div></div>
-        <div class="prep-q"><span class="prep-num">4</span><div><strong>Who is your ideal client?</strong> Describe them like you're talking about a real person. What keeps them stuck? What have they already tried that hasn't worked?</div></div>
-        <div class="prep-q"><span class="prep-num">5</span><div><strong>What content do you create and why should someone follow you?</strong> What will they get from being in your world? What topics do you consistently teach?</div></div>
-      </div>
-    </div>
 
-    <div class="card" style="margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:rgba(212,83,126,0.1);border:1px solid rgba(212,83,126,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">✨</div>
-        <div>
-          <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;color:var(--tx);">Pin 2 — Compel Post</div>
-          <div style="font-size:11.5px;color:var(--txm);font-style:italic;">Client results + social proof</div>
+        <div style="padding:0 0 0 16px;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--pk400);margin-bottom:12px;">✨ Pin 2 — Compel (Social Proof)</div>
+          <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px;">
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">6.</span> Share 3–5 client results — name, the before, the after, timeframe, any quotes.</div>
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">7.</span> What do all your best clients have in common? What changed for them?</div>
+          </div>
+          <div style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;">💫 Pin 3 — Convert (Your Offers)</div>
+          <div style="display:flex;flex-direction:column;gap:9px;">
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">8.</span> Walk through every way to work with you — name, what's inside, price, who it's for.</div>
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">9.</span> Your primary CTA — DM keyword + what they get, free community link, booking link.</div>
+            <div style="font-size:12.5px;color:var(--txs);line-height:1.6;"><span style="font-family:'Montserrat',sans-serif;font-weight:700;color:var(--tx);">10.</span> Biggest objection someone might have before investing — how would you handle it?</div>
+          </div>
         </div>
-      </div>
-      <div class="prep-questions">
-        <div class="prep-q"><span class="prep-num">6</span><div><strong>Share 3–5 client results or transformations.</strong> For each: their name or first name, what they were struggling with before, the specific result or shift after working with you, and a timeframe if you have one. Include any quotes they said if you remember them — those are gold.</div></div>
-        <div class="prep-q"><span class="prep-num">7</span><div><strong>What do your best clients all have in common?</strong> What was the thing that changed for them? What did they stop doing or start doing differently?</div></div>
+
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
-        <div style="width:32px;height:32px;border-radius:50%;background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">💫</div>
-        <div>
-          <div style="font-family:'Montserrat',sans-serif;font-size:12px;font-weight:800;color:var(--tx);">Pin 3 — Convert Post</div>
-          <div style="font-size:11.5px;color:var(--txm);font-style:italic;">Your offers + how to work with you</div>
-        </div>
-      </div>
-      <div class="prep-questions">
-        <div class="prep-q"><span class="prep-num">8</span><div><strong>Walk through every way someone can work with you or get value from you.</strong> Include your free community, every paid tier — name, what's inside, who it's for, price point. Talk through each one like you'd explain it to a friend.</div></div>
-        <div class="prep-q"><span class="prep-num">9</span><div><strong>What's your primary call to action?</strong> Your DM keyword and what they get, your free community link, your booking link — whatever you want people to do next.</div></div>
-        <div class="prep-q"><span class="prep-num">10</span><div><strong>What's the biggest objection someone might have</strong> before investing in working with you? How would you handle it?</div></div>
-      </div>
-    </div>
-
-    <div class="section-label">Paste Your Transcript</div>
+    <div class="section-label">Paste Your Full Transcript</div>
     <div class="card">
-      <p style="font-size:12.5px;color:var(--txs);margin-bottom:12px;line-height:1.6;">Record your Loom, grab the auto-transcript from Loom or use <a href="https://otter.ai" target="_blank" style="color:var(--ui-p);">Otter.ai</a> / <a href="https://rev.com" target="_blank" style="color:var(--ui-p);">Rev</a>, and paste the full text below. Don't clean it up — the raw transcript is fine.</p>
-      <textarea id="transcript" placeholder="Paste your full Loom transcript here... Don't worry about formatting or filler words — the AI will extract everything it needs from what you naturally said." style="width:100%;background:var(--surf2);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;color:var(--tx);font-family:'Lato',sans-serif;font-size:13px;line-height:1.7;resize:vertical;min-height:200px;transition:border-color 0.18s;" oninput="checkTranscript()" onfocus="this.style.borderColor='var(--ui-p)';this.style.background='var(--surf)'" onblur="this.style.borderColor='var(--bdr)'"></textarea>
-      <div id="transcriptCount" style="text-align:right;font-size:11px;color:var(--txm);margin-top:6px;font-family:'Montserrat',sans-serif;">0 words</div>
+      <p style="font-size:12.5px;color:var(--txs);margin-bottom:12px;line-height:1.65;">Loom auto-transcript, Otter.ai, Rev — whatever you used. Paste the whole thing raw. Filler words and run-ons are fine. The longer and more detailed, the better your posts will be.</p>
+      <textarea id="transcript" rows="12" placeholder="Paste your full Loom transcript here... Don't clean it up — Claude reads the whole thing and extracts exactly what it needs for each slide." oninput="onTranscript()"></textarea>
+      <div class="word-count" id="wc">0 words</div>
     </div>
 
-    <div style="display:flex;gap:10px;margin-top:4px;">
+    <div class="divider-row">
       <button class="btn-secondary" onclick="goStep(1)">← Back</button>
-      <button class="btn-primary" id="generateBtn" style="margin-top:0;opacity:0.4;cursor:not-allowed;" onclick="generate()" disabled>✨ Generate My 3 Pinned Posts</button>
+      <button class="btn-primary" id="buildBtn" style="margin-top:0;flex:1;" onclick="buildAndGo()" disabled>✨ Build My Prompt</button>
     </div>
-    <p style="text-align:center;font-size:12px;color:var(--txm);margin-top:10px;font-style:italic;">Takes ~30–45 seconds · all 3 posts generated at once</p>
+    <p style="text-align:center;font-size:12px;color:var(--txm);margin-top:10px;font-style:italic;">Builds a ready-to-paste Claude prompt with your branding + transcript baked in</p>
   </div>
 
-  <!-- ── STEP 3: LOADING ── -->
-  <div id="stepLoading" class="hidden">
-    <div class="loading-wrap">
-      <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-      <div class="loading-pin" id="loadMsg">✨ Building your Connect post...</div>
-      <p>Writing slide scripts, captions + hashtags for all 3 posts</p>
-    </div>
-  </div>
+  <!-- ══════════════════════════════════ STEP 3: PROMPT DELIVERY ══════════════════════════════════ -->
+  <div id="step3" class="hidden">
 
-  <!-- ── STEP 3: RESULTS ── -->
-  <div id="stepResults" class="hidden">
-    <div class="results-bar">
-      <div class="results-bar-left">Your 3 Pinned Posts ✦</div>
-      <div class="results-bar-right">
-        <button class="btn-secondary" onclick="goStep(2)">✏️ Edit</button>
-        <button class="btn-secondary" onclick="regen()">↺ Regen</button>
+    <div class="intro-card">
+      <strong>Step 3 of 3 — Your Prompt is Ready</strong>
+      <p>Copy the prompt below, open a new Claude chat, and paste it in. Claude will read your transcript, write all 3 pinned posts, and render them as a fully branded interactive carousel — in your exact colors.</p>
+    </div>
+
+    <div class="what-box">
+      <div class="what-box-label">What Claude will build for you</div>
+      <div class="what-items">
+        <div class="what-item"><span class="what-icon">📌</span><span><strong>Pin 1 — Connect:</strong> 8-slide carousel with your origin story, who you serve, content promise + CTA</span></div>
+        <div class="what-item"><span class="what-icon">✨</span><span><strong>Pin 2 — Compel:</strong> 9-slide social proof carousel with real client results extracted from your transcript</span></div>
+        <div class="what-item"><span class="what-icon">💫</span><span><strong>Pin 3 — Convert:</strong> 8-slide offer carousel walking through every way to work with you</span></div>
+        <div class="what-item"><span class="what-icon">📝</span><span>Full caption + hashtags for each pin — in your voice, ready to copy</span></div>
+        <div class="what-item"><span class="what-icon">🎨</span><span>Everything rendered in <strong id="brandPreviewText">your brand colors</strong> with slide navigation built in</span></div>
       </div>
     </div>
 
-    <div class="screenshot-tip" id="screenshotTip">
-      <strong>📸 Screenshot Workflow</strong>
-      Open Canva → New design → 1080 × 1350px → Add your photo as background → Screenshot each slide below → Upload as overlay on top of your photo.
+    <div class="delivery-steps">
+      <div class="d-step">
+        <div class="d-num n1">1</div>
+        <div class="d-text"><strong>Copy the prompt</strong> using the button below — the whole thing, your transcript is already inside it.</div>
+      </div>
+      <div class="d-step">
+        <div class="d-num n2">2</div>
+        <div class="d-text"><strong>Open a new Claude chat</strong> at <code>claude.ai/new</code> — paste the prompt and hit send. Give it 30–60 seconds.</div>
+      </div>
+      <div class="d-step">
+        <div class="d-num n3">3</div>
+        <div class="d-text"><strong>Claude renders your artifact</strong> — 3 branded carousels with navigation, captions, and copy buttons. Screenshot each slide for Canva.</div>
+      </div>
     </div>
 
-    <div class="pin-tabs">
-      <button class="pin-tab t1 active" onclick="switchPin(1)">📌 Pin 1 · Connect</button>
-      <button class="pin-tab t2" onclick="switchPin(2)">✨ Pin 2 · Compel</button>
-      <button class="pin-tab t3" onclick="switchPin(3)">💫 Pin 3 · Convert</button>
+    <div class="action-row">
+      <a href="https://claude.ai/new" target="_blank" class="open-btn">🔗 Open New Claude Chat</a>
+      <button class="btn-secondary" onclick="goStep(2)">← Edit Transcript</button>
     </div>
 
-    <div class="pin-panel active" id="panel1">
-      <div class="slides-label">Carousel Slides — Screenshot Each One</div>
-      <div class="slides-grid" id="grid1"></div>
-      <div id="cap1"></div>
+    <div class="prompt-card">
+      <div class="prompt-top">
+        <div class="prompt-top-label">📋 Your Ready-to-Paste Prompt</div>
+        <button class="copy-prompt-btn" id="copyBtn" onclick="copyPrompt()">Copy Prompt</button>
+      </div>
+      <div class="prompt-preview" id="promptPreview"></div>
     </div>
-    <div class="pin-panel" id="panel2">
-      <div class="slides-label">Carousel Slides — Screenshot Each One</div>
-      <div class="slides-grid" id="grid2"></div>
-      <div id="cap2"></div>
-    </div>
-    <div class="pin-panel" id="panel3">
-      <div class="slides-label">Carousel Slides — Screenshot Each One</div>
-      <div class="slides-grid" id="grid3"></div>
-      <div id="cap3"></div>
-    </div>
+    <div class="char-count" id="charCount"></div>
+
+    <button class="btn-secondary" onclick="copyPrompt()" style="width:100%;margin-top:4px;padding:14px;border-radius:12px;font-size:13px;">📋 Copy Prompt Again</button>
+
   </div>
 
 </div>
 
 <script>
-const API = 'https://api.anthropic.com/v1/messages';
-
 // ── BRAND STATE ──
-let brand = {
-  c1: '#7F77DD', c2: '#D4537E',
-  mode: 'light',
-  headFont: 'Montserrat', bodyFont: 'Lato'
-};
+var B = { c1:'#7F77DD', c2:'#D4537E', mode:'light', hf:'Montserrat', bf:'Lato' };
+var builtPrompt = '';
 
-function hexToRgb(hex){
-  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
-  return {r,g,b};
-}
-function lighten(hex,amt=0.75){
-  const {r,g,b}=hexToRgb(hex);
-  return `rgb(${Math.round(r+(255-r)*amt)},${Math.round(g+(255-g)*amt)},${Math.round(b+(255-b)*amt)})`;
-}
-function alpha(hex,a=0.15){
-  const {r,g,b}=hexToRgb(hex);
-  return `rgba(${r},${g},${b},${a})`;
-}
+// ── COLOR MATH ──
+function hexRgb(h){ return { r:parseInt(h.slice(1,3),16), g:parseInt(h.slice(3,5),16), b:parseInt(h.slice(5,7),16) }; }
+function lighten(h, t){ var c=hexRgb(h); t=t||0.75; return 'rgb('+Math.round(c.r+(255-c.r)*t)+','+Math.round(c.g+(255-c.g)*t)+','+Math.round(c.b+(255-c.b)*t)+')'; }
+function alpha(h, a){ var c=hexRgb(h); a=a||0.15; return 'rgba('+c.r+','+c.g+','+c.b+','+a+')'; }
+function darkMix(h, r){ var c=hexRgb(h); r=r||0.28; return 'rgb('+Math.round(c.r*r)+','+Math.round(c.g*r)+','+Math.round(c.b*r)+')'; }
 
 function syncColor(n){
-  const val = document.getElementById('color'+n).value;
-  document.getElementById('hex'+n).value = val;
-  document.getElementById('swatch'+n).style.background = val;
-  brand['c'+n] = val;
-  updatePreview();
+  var v = document.getElementById('col'+n).value;
+  document.getElementById('hex'+n).value = v;
+  document.getElementById('sw'+n).style.background = v;
+  B['c'+n] = v; updatePreview();
 }
 function syncHex(n){
-  let val = document.getElementById('hex'+n).value;
-  if(!/^#[0-9A-Fa-f]{6}$/.test(val)) return;
-  document.getElementById('color'+n).value = val;
-  document.getElementById('swatch'+n).style.background = val;
-  brand['c'+n] = val;
-  updatePreview();
+  var v = document.getElementById('hex'+n).value;
+  if(!/^#[0-9A-Fa-f]{6}$/.test(v)) return;
+  document.getElementById('col'+n).value = v;
+  document.getElementById('sw'+n).style.background = v;
+  B['c'+n] = v; updatePreview();
 }
 function setMode(m){
-  brand.mode = m;
-  document.getElementById('modeLight').classList.toggle('active', m==='light');
-  document.getElementById('modeDark').classList.toggle('active', m==='dark');
+  B.mode = m;
+  document.getElementById('modeLight').classList.toggle('on', m==='light');
+  document.getElementById('modeDark').classList.toggle('on', m==='dark');
   updatePreview();
 }
-
 function updatePreview(){
-  brand.headFont = document.getElementById('headingFont').value;
-  brand.bodyFont = document.getElementById('bodyFont').value;
-  const slide = document.getElementById('previewSlide');
-  const badge = document.getElementById('prevBadge');
-  const hl = document.getElementById('prevHeadline');
-  const body = document.getElementById('prevBody');
-
-  if(brand.mode === 'light'){
-    slide.style.background = `linear-gradient(145deg, ${lighten(brand.c1,0.72)} 0%, ${lighten(brand.c1,0.55)} 50%, ${lighten(brand.c2,0.75)} 100%)`;
-    hl.style.color = mixDark(brand.c1);
-    body.style.color = mixDark(brand.c1, 0.5);
-    badge.style.background = alpha(brand.c1, 0.15);
-    badge.style.color = brand.c1;
+  B.hf = document.getElementById('headFont').value;
+  B.bf = document.getElementById('bodyFont').value;
+  var sl = document.getElementById('prevSlide');
+  var hl = document.getElementById('prevHl');
+  var bo = document.getElementById('prevBody');
+  if(B.mode==='light'){
+    sl.style.background = 'linear-gradient(145deg,'+lighten(B.c1,0.72)+' 0%,'+lighten(B.c1,0.55)+' 50%,'+lighten(B.c2,0.78)+' 100%)';
+    hl.style.color = darkMix(B.c1, 0.3); bo.style.color = darkMix(B.c1, 0.5);
   } else {
-    slide.style.background = `linear-gradient(145deg, ${mixDark(brand.c1,0.85)} 0%, ${mixDark(brand.c1,0.75)} 50%, ${mixDark(brand.c2,0.85)} 100%)`;
-    hl.style.color = '#ffffff';
-    body.style.color = 'rgba(255,255,255,0.75)';
-    badge.style.background = alpha(brand.c1, 0.3);
-    badge.style.color = lighten(brand.c1, 0.7);
+    sl.style.background = 'linear-gradient(145deg,'+darkMix(B.c1,0.82)+' 0%,'+darkMix(B.c1,0.72)+' 50%,'+darkMix(B.c2,0.85)+' 100%)';
+    hl.style.color = '#fff'; bo.style.color = 'rgba(255,255,255,0.7)';
   }
-  hl.style.fontFamily = `'${brand.headFont}', sans-serif`;
-  body.style.fontFamily = `'${brand.bodyFont}', sans-serif`;
-  badge.style.fontFamily = `'${brand.headFont}', sans-serif`;
+  hl.style.fontFamily = "'"+B.hf+"',sans-serif";
+  bo.style.fontFamily = "'"+B.bf+"',sans-serif";
 }
-
-function mixDark(hex, ratio=0.25){
-  const {r,g,b}=hexToRgb(hex);
-  return `rgb(${Math.round(r*ratio)},${Math.round(g*ratio)},${Math.round(b*ratio)})`;
-}
-
 updatePreview();
 
 // ── STEPS ──
 function goStep(n){
-  document.getElementById('step1').classList.toggle('hidden', n!==1);
-  document.getElementById('step2').classList.toggle('hidden', n!==2);
-  document.getElementById('stepLoading').classList.add('hidden');
-  document.getElementById('stepResults').classList.add('hidden');
-  // progress
-  [1,2,3].forEach(i=>{
-    const circle = document.getElementById('sc'+i);
-    const label = document.getElementById('sl'+i);
-    circle.classList.toggle('active', i===n);
-    circle.classList.toggle('done', i<n);
-    label.classList.toggle('active', i===n);
-    if(i<3) document.getElementById('line'+i).classList.toggle('done', i<n);
+  ['step1','step2','step3'].forEach(function(id,i){ document.getElementById(id).classList.toggle('hidden', i+1!==n); });
+  [1,2,3].forEach(function(i){
+    var c=document.getElementById('sc'+i), l=document.getElementById('sl'+i);
+    if(c){ c.classList.toggle('active',i===n); c.classList.toggle('done',i<n); }
+    if(l){ l.classList.toggle('active',i===n); }
+    if(i<3){ var line=document.getElementById('line'+i); if(line) line.classList.toggle('done',i<n); }
   });
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ── TRANSCRIPT ──
-function checkTranscript(){
-  const val = document.getElementById('transcript').value.trim();
-  const words = val ? val.split(/\s+/).length : 0;
-  document.getElementById('transcriptCount').textContent = words + ' words';
-  const btn = document.getElementById('generateBtn');
-  const hasEnough = words >= 50;
-  btn.disabled = !hasEnough;
-  btn.style.opacity = hasEnough ? '1' : '0.4';
-  btn.style.cursor = hasEnough ? 'pointer' : 'not-allowed';
+function onTranscript(){
+  var v = document.getElementById('transcript').value.trim();
+  var words = v ? v.split(/\s+/).length : 0;
+  document.getElementById('wc').textContent = words + ' words';
+  var ok = words >= 80;
+  document.getElementById('buildBtn').disabled = !ok;
+  document.getElementById('buildBtn').style.opacity = ok ? '1' : '0.38';
 }
 
-// ── GENERATE ──
-async function generate(){
-  const transcript = document.getElementById('transcript').value.trim();
-  if(!transcript || transcript.split(/\s+/).length < 50){
-    alert('Please paste your Loom transcript first (at least 50 words).');
-    return;
-  }
+// ── BUILD PROMPT ──
+function buildAndGo(){
+  var transcript = document.getElementById('transcript').value.trim();
+  if(!transcript || transcript.split(/\s+/).length < 80){ alert('Please paste your transcript first — at least 80 words.'); return; }
 
-  document.getElementById('step2').classList.add('hidden');
-  document.getElementById('stepLoading').classList.remove('hidden');
-  setStepCircle(3);
+  var slideStyle = B.mode === 'light'
+    ? 'light gradient slides: bg = linear-gradient(145deg, '+lighten(B.c1,0.72)+', '+lighten(B.c1,0.56)+', '+lighten(B.c2,0.78)+'); headline color = '+darkMix(B.c1,0.28)+'; body color = '+darkMix(B.c1,0.5)+'; badge bg = '+alpha(B.c1,0.15)+'; badge text = '+B.c1
+    : 'dark moody slides: bg = linear-gradient(145deg, '+darkMix(B.c1,0.82)+', '+darkMix(B.c1,0.72)+', '+darkMix(B.c2,0.85)+'); headline color = #ffffff; body color = rgba(255,255,255,0.72); badge bg = '+alpha(B.c1,0.3)+'; badge text = '+lighten(B.c1,0.72);
 
-  const msgs=['✨ Building your Connect post...','💫 Crafting your Compel slides...','🔥 Writing your Convert post...','✍️ Polishing captions + hashtags...'];
-  let mi=0;
-  const ticker=setInterval(()=>{mi=(mi+1)%msgs.length;document.getElementById('loadMsg').textContent=msgs[mi];},4000);
+  var prompt = 'You are an expert Instagram strategist for spiritual coaches, healers, and heart-centered entrepreneurs. Your job is to read the transcript below and build 3 high-converting pinned Instagram carousel posts using the CONNECT, COMPEL, and CONVERT framework.\n\n';
 
-  try{
-    const resp=await fetch(API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:4000,
-        system:`You are a viral Instagram strategist for spiritual coaches and healers. Create high-converting pinned posts using the CONNECT → COMPEL → CONVERT framework.
+  prompt += '=== BRAND SPECS ===\n';
+  prompt += 'Primary color: '+B.c1+'\n';
+  prompt += 'Accent color: '+B.c2+'\n';
+  prompt += 'Heading font: '+B.hf+'\n';
+  prompt += 'Body font: '+B.bf+'\n';
+  prompt += 'Slide style: '+slideStyle+'\n\n';
 
-Your job is to extract everything you need from the transcript provided — their niche, voice, origin story, client results, offers, CTAs — and write slides in their actual language and tone. Do not use generic spiritual marketing language. Use their words, their stories, their specifics.
+  prompt += '=== YOUR TASK ===\n';
+  prompt += 'Read the full transcript. Extract the person\'s real stories, real voice, real client results, and real offers. Do NOT use generic spiritual marketing language. Use their actual words, their actual transformations, their actual numbers wherever possible.\n\n';
 
-CRITICAL slide rules:
-- "headline": BIG bold statement, 1-2 lines max, punchy, include relevant emoji
-- "body": 2-3 SHORT supporting lines, softer detail
-- Keep ALL text short — mobile slides, less is more
-- Mirror the person's actual voice and vocabulary from the transcript
-- Never corporate, never generic, never "bro marketing"
+  prompt += '=== SLIDE RULES ===\n';
+  prompt += '- Headlines: Bold, punchy, 1-2 lines max, include a relevant emoji\n';
+  prompt += '- Body text: 2-3 short soft lines of supporting detail\n';
+  prompt += '- Mobile carousels = less is more. Never more than 30 words per slide total.\n';
+  prompt += '- Mirror their actual voice and vocabulary from the transcript\n';
+  prompt += '- Never corporate, never generic, never "manifest your dreams" fluff\n\n';
 
-Respond ONLY in valid JSON. No markdown. No backticks. Start directly with {`,
-        messages:[{role:'user',content:buildPrompt(transcript)}]
-      })
-    });
-    clearInterval(ticker);
-    const data=await resp.json();
-    const text=data.content.map(b=>b.text||'').join('');
-    const clean=text.replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(clean);
-    renderAll(parsed);
-  }catch(err){
-    clearInterval(ticker);
-    console.error(err);
-    alert('Something went wrong — please try again.');
-    goStep(2);
-  }
-}
+  prompt += '=== WHAT TO BUILD ===\n';
+  prompt += 'Output a SINGLE self-contained HTML artifact with all 3 pinned posts. Requirements:\n';
+  prompt += '- Import the heading and body fonts from Google Fonts\n';
+  prompt += '- Dark page background (#0f0e1a or similar deep dark) with the slide cards floating on it\n';
+  prompt += '- Each pin has its own tab/section (Pin 1 Connect, Pin 2 Compel, Pin 3 Convert)\n';
+  prompt += '- Each slide is 4:5 aspect ratio (like Instagram), max 320px wide, rendered as a visual card with the brand colors\n';
+  prompt += '- Slide navigation: prev/next arrows + dot indicators\n';
+  prompt += '- Each pin shows all its slides in a scrollable or tabbed grid view AND a focused single-slide view\n';
+  prompt += '- Below each pin: full caption + hashtags in a collapsible or visible section with a Copy button\n';
+  prompt += '- Screenshot tip at the top: "Screenshot each slide → upload into Canva at 1080x1350px over your photo"\n';
+  prompt += '- The artifact must be fully self-contained (no external dependencies except Google Fonts)\n\n';
 
-function setStepCircle(n){
-  [1,2,3].forEach(i=>{
-    const c=document.getElementById('sc'+i);
-    const l=document.getElementById('sl'+i);
-    c.classList.toggle('active',i===n);
-    c.classList.toggle('done',i<n);
-    l.classList.toggle('active',i===n);
-    if(i<3)document.getElementById('line'+i).classList.toggle('done',i<n);
+  prompt += '=== PIN 1: CONNECT (Your Story) ===\n';
+  prompt += 'Slides:\n';
+  prompt += '1. Hook — scroll-stopping statement or question under 10 words + "Swipe 👇"\n';
+  prompt += '2. The Before — their relatable struggle before the transformation\n';
+  prompt += '3. The Turning Point — what changed everything for them\n';
+  prompt += '4. The After — where they are now because of it\n';
+  prompt += '5. Now I Help — who they serve + what transformation they deliver\n';
+  prompt += '6. This Is For You If... — 3 lines describing the ideal client\n';
+  prompt += '7. Follow For... — 3-4 content topics they consistently teach\n';
+  prompt += '8. Save + Follow — clear CTA with their DM keyword\n';
+  prompt += 'Caption: 220-280 words, story-driven, conversational, line breaks between paragraphs\n';
+  prompt += 'Hashtags: 10 targeted hashtags\n\n';
+
+  prompt += '=== PIN 2: COMPEL (Social Proof) ===\n';
+  prompt += 'Slides:\n';
+  prompt += '1. Hook — lead with the most impressive result from the transcript\n';
+  prompt += '2. Setup — "These are real results from [type of client] who stopped forcing and started aligning"\n';
+  prompt += '3-6. Client Results — one slide per client (use names/details from transcript if available, or create realistic ones based on their niche). Format: Name · HD Type or Role / Before → After / short quote in single quotes\n';
+  prompt += '7. The Common Thread — what all their best clients share\n';
+  prompt += '8. This Could Be You — if you are ready to stop guessing\n';
+  prompt += '9. DM CTA — "Comment [KEYWORD] 👇 and I\'ll DM you [specific thing]"\n';
+  prompt += 'Caption: 220-280 words, proof-focused but warm, conversational\n';
+  prompt += 'Hashtags: 10 targeted hashtags\n\n';
+
+  prompt += '=== PIN 3: CONVERT (Your Offers) ===\n';
+  prompt += 'Slides:\n';
+  prompt += '1. Hook — "[X] ways to work with me 👇" at every level\n';
+  prompt += '2. Pain Point — "Does this sound familiar?" — the frustration of posting but not converting\n';
+  prompt += '3-5. One slide per offer tier — name, price, what\'s inside, who it\'s for (extract from transcript)\n';
+  prompt += '6. Social Proof — one compelling credibility line or testimonial\n';
+  prompt += '7. Objection Handler — "Not sure which is right? That\'s what the DMs are for."\n';
+  prompt += '8. Triple CTA — their free option + DM keyword + paid option\n';
+  prompt += 'Caption: 220-280 words, offer-focused but not pushy, ends with CTA\n';
+  prompt += 'Hashtags: 10 targeted hashtags\n\n';
+
+  prompt += '=== TRANSCRIPT ===\n';
+  prompt += transcript;
+  prompt += '\n\n=== REMINDER ===\n';
+  prompt += 'Output ONE self-contained HTML artifact. No JSON. No explanation before or after. Just the full working HTML file starting with <!DOCTYPE html>. Make it beautiful, make it branded, make it actually usable for screenshots.';
+
+  builtPrompt = prompt;
+
+  // Update brand preview text in step 3
+  document.getElementById('brandPreviewText').textContent = B.c1 + ' + ' + B.c2 + ', ' + B.hf + ' headings';
+
+  // Show prompt preview (truncated for display)
+  var preview = prompt.length > 1200 ? prompt.substring(0, 1200) + '\n\n... [transcript continues — full prompt copied] ...' : prompt;
+  document.getElementById('promptPreview').textContent = preview;
+  document.getElementById('charCount').textContent = prompt.length.toLocaleString() + ' characters total — full prompt includes your entire transcript';
+
+  // Auto-copy
+  doCopy(function(){
+    goStep(3);
   });
 }
 
-function regen(){
-  document.getElementById('stepResults').classList.add('hidden');
-  document.getElementById('step2').classList.remove('hidden');
-  goStep(2);
-}
-
-function buildPrompt(transcript){
-  return `Create 3 pinned Instagram carousel posts for this spiritual entrepreneur based on their Loom transcript below.
-
-Extract everything you need from their transcript — their niche, voice, stories, client results, offers, CTAs, and language. Write slides in their actual tone. Use their specific words and phrases. Do not genericise.
-
-TRANSCRIPT:
-${transcript}
-
-Return ONLY this exact JSON structure:
-
-{
-  "pin1": {
-    "slides": [
-      {"num":1,"label":"Hook","headline":"scroll-stopping hook under 10 words + Swipe → 👇","body":"one short supporting line"},
-      {"num":2,"label":"The Before","headline":"relatable before-state headline","body":"2-3 lines describing the struggle"},
-      {"num":3,"label":"Turning Point","headline":"what changed everything ✨","body":"the discovery or moment"},
-      {"num":4,"label":"The After","headline":"transformation result 🔥","body":"specific result or shift"},
-      {"num":5,"label":"Now I Help","headline":"now I help [who] do the same","body":"who + what they get"},
-      {"num":6,"label":"Who You Are","headline":"this is for you if... 💜","body":"3 lines describing ideal client"},
-      {"num":7,"label":"Content Promise","headline":"follow for [what] 📲","body":"3-4 content topics"},
-      {"num":8,"label":"Save + Follow","headline":"save this + follow ✨","body":"CTA with DM keyword"}
-    ],
-    "caption": "full story-driven instagram caption",
-    "hashtags": "#tag1 #tag2 #tag3 #tag4 #tag5"
-  },
-  "pin2": {
-    "slides": [
-      {"num":1,"label":"Hook","headline":"most impressive result as hook →","body":"one line teaser"},
-      {"num":2,"label":"Setup","headline":"these are real results 💫","body":"from [audience] who stopped forcing + started aligning"},
-      {"num":3,"label":"Client 1","headline":"[Name] · [HD Type or role]","body":"Before → After\n'short quote'"},
-      {"num":4,"label":"Client 2","headline":"[Name] · [HD Type or role]","body":"Before → After\n'short quote'"},
-      {"num":5,"label":"Client 3","headline":"[Name] · [HD Type or role]","body":"Before → After\n'short quote'"},
-      {"num":6,"label":"Client 4","headline":"[Name] · [HD Type or role]","body":"Before → After\n'short quote'"},
-      {"num":7,"label":"The Method","headline":"what they all have in common 🔑","body":"they stopped forcing. they started aligning."},
-      {"num":8,"label":"This Could Be You","headline":"this could be you 💜","body":"if you're ready to stop guessing..."},
-      {"num":9,"label":"DM CTA","headline":"comment [KEYWORD] 👇","body":"and I'll DM you [what they get]"}
-    ],
-    "caption": "full story-driven instagram caption",
-    "hashtags": "#tag1 #tag2 #tag3 #tag4 #tag5"
-  },
-  "pin3": {
-    "slides": [
-      {"num":1,"label":"Hook","headline":"[X] ways to work with me 👇","body":"at every level — from free to premium"},
-      {"num":2,"label":"Pain Point","headline":"does this sound familiar? 🤔","body":"you're posting but not converting.\nyou're busy but not booked."},
-      {"num":3,"label":"Offer Tier 1","headline":"[offer name] — [price] ✨","body":"what's inside + who it's for"},
-      {"num":4,"label":"Offer Tier 2","headline":"[offer name] — [price]","body":"what's inside + who it's for"},
-      {"num":5,"label":"Offer Tier 3","headline":"[offer name] — [price] 🔥","body":"what's inside + perceived value"},
-      {"num":6,"label":"Social Proof","headline":"'[short testimonial]' 💜","body":"— [Name], [role or type]"},
-      {"num":7,"label":"Objection Handler","headline":"not sure which is right? 🤍","body":"that's what the DMs are for.\nno pressure, just clarity."},
-      {"num":8,"label":"Triple CTA","headline":"ready? here's your next step 👇","body":"🔗 [free option]\n💌 DM: [keyword]\n📅 [paid option]"}
-    ],
-    "caption": "full story-driven instagram caption",
-    "hashtags": "#tag1 #tag2 #tag3 #tag4 #tag5"
-  }
-}`;
-}
-
-// ── RENDER ──
-function renderAll(data){
-  document.getElementById('stepLoading').classList.add('hidden');
-  document.getElementById('stepResults').classList.remove('hidden');
-
-  // Style screenshot tip with brand colors
-  const tip = document.getElementById('screenshotTip');
-  tip.style.background = alpha(brand.c1, 0.06);
-  tip.style.borderColor = alpha(brand.c1, 0.2);
-  tip.style.color = mixDark(brand.c1, 0.35);
-
-  renderPin('grid1','cap1',data.pin1,'pin1');
-  renderPin('grid2','cap2',data.pin2,'pin2');
-  renderPin('grid3','cap3',data.pin3,'pin3');
-  switchPin(1);
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function getBrandedSlideStyle(pinIdx){
-  // Each pin gets a slightly different tint using c1/c2 mix
-  const mixes = [
-    {start:brand.c1, end:brand.c2},
-    {start:brand.c2, end:brand.c1},
-    {start:brand.c1, end:brand.c1}
-  ];
-  const m = mixes[pinIdx];
-  if(brand.mode==='light'){
-    return {
-      bg:`linear-gradient(145deg, ${lighten(m.start,0.72)} 0%, ${lighten(m.start,0.58)} 50%, ${lighten(m.end,0.78)} 100%)`,
-      blob1:`radial-gradient(circle, ${alpha(m.start,0.35)}, transparent 70%)`,
-      blob2:`radial-gradient(circle, ${alpha(m.end,0.25)}, transparent 70%)`,
-      txMain: mixDark(m.start, 0.28),
-      txSub: mixDark(m.start, 0.45),
-      badgeBg: alpha(m.start, 0.15),
-      badgeTx: brand.c1,
-      numBg: alpha(m.start, 0.18),
-      numTx: mixDark(m.start, 0.3),
-    };
+function doCopy(cb){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(builtPrompt).then(cb).catch(function(){
+      fallbackCopy(); if(cb) cb();
+    });
   } else {
-    return {
-      bg:`linear-gradient(145deg, ${mixDark(m.start,0.85)} 0%, ${mixDark(m.start,0.75)} 45%, ${mixDark(m.end,0.88)} 100%)`,
-      blob1:`radial-gradient(circle, ${alpha(m.start,0.3)}, transparent 70%)`,
-      blob2:`radial-gradient(circle, ${alpha(m.end,0.2)}, transparent 70%)`,
-      txMain:'#ffffff',
-      txSub:'rgba(255,255,255,0.72)',
-      badgeBg:alpha(m.start,0.3),
-      badgeTx:lighten(m.start,0.7),
-      numBg:alpha(m.start,0.3),
-      numTx:lighten(m.start,0.8),
-    };
+    fallbackCopy(); if(cb) cb();
   }
 }
 
-function renderPin(gridId, capId, pin, pinKey){
-  const pinIdx = {pin1:0,pin2:1,pin3:2}[pinKey];
-  const s = getBrandedSlideStyle(pinIdx);
-  const grid = document.getElementById(gridId);
-
-  grid.innerHTML = pin.slides.map((sl,i)=>`
-    <div class="slide-wrap">
-      <div class="slide-num-label">Slide ${sl.num} · ${sl.label}</div>
-      <div class="slide-visual" style="background:${s.bg};">
-        <div class="slide-blob1" style="background:${s.blob1};"></div>
-        <div class="slide-blob2" style="background:${s.blob2};"></div>
-        <div class="slide-num-circle" style="background:${s.numBg};color:${s.numTx};font-family:'${brand.headFont}',sans-serif;">${sl.num}</div>
-        <div class="slide-inner">
-          <div class="slide-badge" style="background:${s.badgeBg};color:${s.badgeTx};font-family:'${brand.headFont}',sans-serif;">${sl.label}</div>
-          <div class="slide-headline" style="color:${s.txMain};font-family:'${brand.headFont}',sans-serif;">${esc(sl.headline)}</div>
-          ${sl.body?`<div class="slide-body-text" style="color:${s.txSub};font-family:'${brand.bodyFont}',sans-serif;">${esc(sl.body)}</div>`:''}
-        </div>
-        ${i===0?`<div class="slide-swipe" style="color:${s.txMain};font-family:'${brand.headFont}',sans-serif;">Swipe →</div>`:''}
-      </div>
-    </div>
-  `).join('');
-
-  document.getElementById(capId).innerHTML=`
-    <div class="caption-card">
-      <div class="caption-top">
-        <div class="caption-top-left">📝 Caption + Hashtags</div>
-        <button class="copy-btn" onclick="copyText(this,${JSON.stringify(pin.caption+'\n\n'+pin.hashtags)})">Copy All</button>
-      </div>
-      <div class="caption-body">
-        <div class="caption-text">${esc(pin.caption)}</div>
-        <div class="hashtag-row">${esc(pin.hashtags)}</div>
-      </div>
-    </div>`;
+function fallbackCopy(){
+  var ta = document.createElement('textarea');
+  ta.value = builtPrompt;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+  document.body.appendChild(ta);
+  ta.select(); document.execCommand('copy');
+  document.body.removeChild(ta);
 }
 
-function switchPin(n){
-  document.querySelectorAll('.pin-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
-  document.querySelectorAll('.pin-panel').forEach((p,i)=>p.classList.toggle('active',i===n-1));
-}
-
-function esc(t){return(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
-
-function copyText(btn,text){
-  navigator.clipboard.writeText(text).then(()=>{
-    btn.textContent='Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='Copy All';btn.classList.remove('copied');},2000);
+function copyPrompt(){
+  if(!builtPrompt){ alert('Build your prompt first in Step 2.'); return; }
+  var btn = document.getElementById('copyBtn');
+  doCopy(function(){
+    btn.textContent = '✅ Copied!'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent = 'Copy Prompt'; btn.classList.remove('copied'); }, 2500);
   });
 }
 </script>
